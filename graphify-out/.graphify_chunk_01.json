@@ -1,0 +1,37 @@
+{
+  "nodes": [
+    {"id": "auto_tester", "label": "Auto Tester", "file_type": "code", "source_file": "auto_tester.py"},
+    {"id": "live_trader", "label": "Live Trader", "file_type": "code", "source_file": "live_trader.py"},
+    {"id": "strategy_evolver", "label": "Strategy Evolver", "file_type": "code", "source_file": "strategy_evolver.py"},
+    {"id": "train_rl", "label": "Train RL", "file_type": "code", "source_file": "train_rl.py"},
+    {"id": "rl_env", "label": "RL Environment", "file_type": "code", "source_file": "rl_env.py"},
+    {"id": "python_strategy_v24", "label": "SMC Strategy v24", "file_type": "code", "source_file": "python_strategy_v24.py"},
+    {"id": "python_strategy_v23", "label": "SMC Strategy v23", "file_type": "code", "source_file": "python_strategy_v23.py"},
+    {"id": "python_strategy_v22", "label": "SMC Strategy v22", "file_type": "code", "source_file": "python_strategy_v22.py"},
+    {"id": "numba_stub", "label": "Numba Hook", "file_type": "code", "source_file": "numba.py"},
+    {"id": "dashboard", "label": "Trading Dashboard", "file_type": "document", "source_file": "dashboard.html"},
+    {"id": "help_txt", "label": "Help Documentation", "file_type": "document", "source_file": "help.txt"},
+    {"id": "paper_trading_setup", "label": "Paper Trading Guide", "file_type": "document", "source_file": "PAPER_TRADING_SETUP.md"},
+    {"id": "smc_ppo_model", "label": "PPO Model", "file_type": "data", "source_file": "smc_ppo_model.zip"},
+    {"id": "vec_normalize", "label": "Normalisation Stats", "file_type": "data", "source_file": "vec_normalize.pkl"}
+  ],
+  "edges": [
+    {"source": "auto_tester", "target": "strategy_evolver", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "auto_tester.py"},
+    {"source": "auto_tester", "target": "python_strategy_v24", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "auto_tester.py"},
+    {"source": "live_trader", "target": "rl_env", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "live_trader.py"},
+    {"source": "live_trader", "target": "python_strategy_v24", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "live_trader.py"},
+    {"source": "train_rl", "target": "rl_env", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "train_rl.py"},
+    {"source": "train_rl", "target": "auto_tester", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "train_rl.py"},
+    {"source": "train_rl", "target": "python_strategy_v24", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "train_rl.py"},
+    {"source": "strategy_evolver", "target": "python_strategy_v24", "relation": "generates", "confidence": "INFERRED", "confidence_score": 0.9, "source_file": "strategy_evolver.py"},
+    {"source": "numba_stub", "target": "python_strategy_v24", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.8, "source_file": "numba.py"},
+    {"source": "train_rl", "target": "smc_ppo_model", "relation": "generates", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "train_rl.py"},
+    {"source": "train_rl", "target": "vec_normalize", "relation": "generates", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "train_rl.py"},
+    {"source": "live_trader", "target": "smc_ppo_model", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "live_trader.py"},
+    {"source": "live_trader", "target": "vec_normalize", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "live_trader.py"},
+    {"source": "auto_tester", "target": "help_txt", "relation": "rationale_for", "confidence": "INFERRED", "confidence_score": 0.7, "source_file": "auto_tester.py"}
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

@@ -1,0 +1,71 @@
+//@version=5
+strategy("SMC Evolved Strategy v24", overlay=true, initial_capital=10000, default_qty_type=strategy.percent_of_equity, default_qty_value=10, commission_type=strategy.commission.percent, commission_value=0.04)
+
+// ---------------------------------------------------------------------------
+// Parameters (Ported from python_strategy_v24.py)
+// ---------------------------------------------------------------------------
+atr_period      = input.int(14, "ATR Period")
+fvg_atr_multi   = input.float(0.5274, "FVG Min Size (ATR Multi)")
+sl_atr_multi    = input.float(1.7903, "SL ATR Multi")
+tp_atr_multi    = input.float(9.0, "TP ATR Multi")
+sma_fast_len    = input.int(23, "SMA Fast Period")
+sma_slow_len    = input.int(137, "SMA Slow Period")
+cmf_period      = input.int(20, "CMF Period")
+cmf_threshold   = input.float(0.254, "CMF Threshold")
+
+// ---------------------------------------------------------------------------
+// Indicators
+// ---------------------------------------------------------------------------
+atr = ta.atr(atr_period)
+sma_fast = ta.sma(close, sma_fast_len)
+sma_slow = ta.sma(close, sma_slow_len)
+
+// Chaikin Money Flow (Manual calc to match pandas-ta)
+mf_vol = ((close - low) - (high - close)) / (high - low) * volume
+cmf = ta.sma(mf_vol, cmf_period) / ta.sma(volume, cmf_period)
+
+// ---------------------------------------------------------------------------
+// FVG Detection
+// ---------------------------------------------------------------------------
+bull_fvg_active = (low > high[2]) and (low - high[2] >= fvg_atr_multi * atr)
+bear_fvg_active = (high < low[2]) and (low[2] - high >= fvg_atr_multi * atr)
+
+// Perspective: Capture the boundaries on the bar the FVG is created
+var float fvg_bull_lower = na
+var float fvg_bear_upper = na
+
+if bull_fvg_active
+    fvg_bull_lower := low
+
+if bear_fvg_active
+    fvg_bear_upper := high
+
+// ---------------------------------------------------------------------------
+// Strategy Signals (Retest Logic)
+// ---------------------------------------------------------------------------
+// Long logic: retest of prior bullish FVG with trend/volume confirmation
+long_cond = bull_fvg_active[1] and low <= fvg_bull_lower[1] and close > fvg_bull_lower[1] and sma_fast > sma_slow and cmf > cmf_threshold
+
+// Short logic: retest of prior bearish FVG with trend/volume confirmation
+short_cond = bear_fvg_active[1] and high >= fvg_bear_upper[1] and close < fvg_bear_upper[1] and sma_fast < sma_slow and cmf < -cmf_threshold
+
+// ---------------------------------------------------------------------------
+// Execution
+// ---------------------------------------------------------------------------
+if long_cond
+    sl_dist = sl_atr_multi * atr
+    tp_dist = tp_atr_multi * atr
+    strategy.entry("Long", strategy.long, comment="FVG Retest L")
+    strategy.exit("Exit L", "Long", stop=close - sl_dist, limit=close + tp_dist)
+
+if short_cond
+    sl_dist = sl_atr_multi * atr
+    tp_dist = tp_atr_multi * atr
+    strategy.entry("Short", strategy.short, comment="FVG Retest S")
+    strategy.exit("Exit S", "Short", stop=close + sl_dist, limit=close - tp_dist)
+
+// Visualization
+plot(sma_fast, color=color.blue, title="SMA Fast")
+plot(sma_slow, color=color.orange, title="SMA Slow")
+plotshape(bull_fvg_active, style=shape.triangleup, location=location.belowbar, color=color.green, size=size.tiny, title="FVG Bull")
+plotshape(bear_fvg_active, style=shape.triangledown, location=location.abovebar, color=color.red, size=size.tiny, title="FVG Bear")

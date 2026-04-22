@@ -1,0 +1,224 @@
+[
+  {
+    "version": 10,
+    "in_sample_pf": 0.79,
+    "validation_pf": 0.57,
+    "total_trades": 931
+  },
+  {
+    "version": 11,
+    "in_sample_pf": 0.87,
+    "validation_pf": 0.59,
+    "total_trades": 234
+  },
+  {
+    "version": 12,
+    "in_sample_pf": 0.81,
+    "validation_pf": 0.8,
+    "total_trades": 989
+  },
+  {
+    "version": 13,
+    "in_sample_pf": 1.01,
+    "validation_pf": 0.76,
+    "total_trades": 435
+  },
+  {
+    "version": 13,
+    "in_sample_pf": 1.0,
+    "validation_pf": 0.69,
+    "total_trades": 485
+  },
+  {
+    "version": 16,
+    "in_sample_pf": 1.3,
+    "validation_pf": 0.56,
+    "total_trades": 197
+  },
+  {
+    "version": 17,
+    "in_sample_pf": 1.2,
+    "validation_pf": 0.43,
+    "total_trades": 264
+  },
+  {
+    "version": 18,
+    "in_sample_pf": 1.22,
+    "validation_pf": 0.42,
+    "total_trades": 168
+  },
+  {
+    "version": 18,
+    "in_sample_pf": 1.22,
+    "validation_pf": 0.42,
+    "total_trades": 168
+  },
+  {
+    "version": 18,
+    "in_sample_pf": 1.23,
+    "validation_pf": 0.41,
+    "total_trades": 168
+  },
+  {
+    "version": 18,
+    "in_sample_pf": 1.23,
+    "validation_pf": 0.41,
+    "total_trades": 168
+  },
+  {
+    "version": 19,
+    "in_sample_pf": 0.92,
+    "validation_pf": 0.54,
+    "total_trades": 471
+  },
+  {
+    "version": 20,
+    "in_sample_pf": 1.0,
+    "validation_pf": 0.68,
+    "total_trades": 363
+  },
+  {
+    "version": 21,
+    "in_sample_pf": 0.63,
+    "validation_pf": 0.72,
+    "total_trades": 539
+  },
+  {
+    "version": 22,
+    "in_sample_pf": 0.82,
+    "validation_pf": 0.65,
+    "total_trades": 406
+  },
+  {
+    "version": 23,
+    "in_sample_pf": 1.17,
+    "validation_pf": 0.49,
+    "total_trades": 271
+  },
+  {
+    "version": 22,
+    "in_sample_pf": 0.72,
+    "validation_pf": 0.9,
+    "validation_dd": 13.69,
+    "total_trades": 1191,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.55,
+      "sl_atr_multi": 2.0,
+      "tp_atr_multi": 5.0,
+      "trail_atr_multi": 2.0,
+      "sma_fast_period": 20,
+      "sma_slow_period": 50,
+      "cmf_period": 20,
+      "cmf_threshold": 0.05
+    }
+  },
+  {
+    "version": 23,
+    "in_sample_pf": 0.61,
+    "validation_pf": 1.33,
+    "validation_dd": 2.72,
+    "total_trades": 400,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5466,
+      "sl_atr_multi": 1.8352,
+      "tp_atr_multi": 8.3475,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 20,
+      "sma_slow_period": 105,
+      "cmf_period": 20,
+      "cmf_threshold": 0.2285
+    }
+  },
+  {
+    "version": 24,
+    "in_sample_pf": 0.63,
+    "validation_pf": 1.78,
+    "validation_dd": 1.53,
+    "total_trades": 321,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5274,
+      "sl_atr_multi": 1.7903,
+      "tp_atr_multi": 9.0,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 23,
+      "sma_slow_period": 137,
+      "cmf_period": 20,
+      "cmf_threshold": 0.254
+    }
+  },
+  {
+    "version": 24,
+    "in_sample_pf": 0.63,
+    "validation_pf": 1.78,
+    "validation_dd": 1.53,
+    "total_trades": 321,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5274,
+      "sl_atr_multi": 1.7903,
+      "tp_atr_multi": 9.0,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 23,
+      "sma_slow_period": 137,
+      "cmf_period": 20,
+      "cmf_threshold": 0.254
+    }
+  },
+  {
+    "version": 24,
+    "in_sample_pf": 0.63,
+    "validation_pf": 1.78,
+    "validation_dd": 1.53,
+    "total_trades": 321,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5274,
+      "sl_atr_multi": 1.7903,
+      "tp_atr_multi": 9.0,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 23,
+      "sma_slow_period": 137,
+      "cmf_period": 20,
+      "cmf_threshold": 0.254
+    }
+  },
+  {
+    "version": 24,
+    "in_sample_pf": 0.89,
+    "validation_pf": 1.35,
+    "validation_dd": 6.08,
+    "total_trades": 305,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5274,
+      "sl_atr_multi": 1.7903,
+      "tp_atr_multi": 9.0,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 23,
+      "sma_slow_period": 137,
+      "cmf_period": 20,
+      "cmf_threshold": 0.254
+    }
+  },
+  {
+    "version": 24,
+    "in_sample_pf": 0.89,
+    "validation_pf": 1.35,
+    "validation_dd": 6.08,
+    "total_trades": 305,
+    "params": {
+      "atr_period": 14,
+      "fvg_atr_multi": 0.5274,
+      "sl_atr_multi": 1.7903,
+      "tp_atr_multi": 9.0,
+      "trail_atr_multi": 1.65,
+      "sma_fast_period": 23,
+      "sma_slow_period": 137,
+      "cmf_period": 20,
+      "cmf_threshold": 0.254
+    }
+  }
+]

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MFC Paper Trading Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #0f1117; color: #e2e8f0; padding: 24px; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 20px; color: #f8fafc; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .card { background: #1e2330; border-radius: 10px; padding: 16px; }
+  .card .label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .card .value { font-size: 26px; font-weight: 600; }
+  .green { color: #4ade80; }
+  .red   { color: #f87171; }
+  .amber { color: #fbbf24; }
+  .gray  { color: #94a3b8; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #1e2330; color: #64748b; font-weight: 500; font-size: 11px; text-transform: uppercase; }
+  td { padding: 8px 12px; border-bottom: 1px solid #1e2330; }
+  tr:hover td { background: #1e2330; }
+  .win  { color: #4ade80; }
+  .loss { color: #f87171; }
+  .open { color: #fbbf24; }
+  canvas { display: block; width: 100%; height: 200px; margin: 20px 0; }
+  .section-title { font-size: 13px; color: #64748b; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: .05em; }
+  .refresh { font-size: 11px; color: #475569; margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>MFC Paper Trading Dashboard</h1>
+
+<div class="grid" id="stats"></div>
+
+<div class="section-title">Equity curve</div>
+<canvas id="equity"></canvas>
+
+<div class="section-title">Trade log</div>
+<table>
+  <thead>
+    <tr><th>#</th><th>Side</th><th>Entry</th><th>Exit</th><th>SL</th><th>TP</th><th>RSI</th><th>PnL %</th><th>Result</th><th>Time</th></tr>
+  </thead>
+  <tbody id="trades"></tbody>
+</table>
+
+<p class="refresh">Auto-refreshes every 30 seconds. Source: trades.json via /api/trades</p>
+
+<script>
+async function load() {
+  let trades = [];
+  try {
+    const r = await fetch('/api/trades');
+    trades = await r.json();
+  } catch(e) {
+    // Try reading trades.json directly if served statically
+    try {
+      const r = await fetch('trades.json');
+      trades = await r.json();
+    } catch(e2) { return; }
+  }
+
+  const closed = trades.filter(t => t.status === 'closed');
+  const wins   = closed.filter(t => t.result === 'win');
+  const open   = trades.filter(t => t.status === 'open');
+  const wr     = closed.length ? (wins.length / closed.length * 100).toFixed(1) : '—';
+  const pnls   = closed.map(t => t.pnl_pct || 0);
+  const totalPnl = pnls.reduce((a,b) => a+b, 0).toFixed(2);
+  const avgWin = wins.length ? (wins.reduce((a,t)=>a+t.pnl_pct,0)/wins.length).toFixed(2) : '—';
+  const losses = closed.filter(t => t.result === 'loss');
+  const avgLoss= losses.length ? (losses.reduce((a,t)=>a+t.pnl_pct,0)/losses.length).toFixed(2) : '—';
+  const rr     = (avgLoss && avgLoss !== '—') ? Math.abs(avgWin/avgLoss).toFixed(2) : '—';
+
+  // Stats cards
+  const stats = [
+    { label: 'Total trades',  value: closed.length,           cls: 'gray'  },
+    { label: 'Win rate',      value: wr + '%',                cls: parseFloat(wr)>=55?'green':parseFloat(wr)<45?'red':'amber' },
+    { label: 'Avg R:R',       value: rr,                      cls: parseFloat(rr)>=1.5?'green':'red' },
+    { label: 'Total PnL',     value: (totalPnl>0?'+':'')+totalPnl+'%', cls: totalPnl>=0?'green':'red' },
+    { label: 'Avg win',       value: (avgWin!=='—'?'+':'')+avgWin+'%', cls: 'green' },
+    { label: 'Avg loss',      value: avgLoss+'%',             cls: 'red'   },
+    { label: 'Open trades',   value: open.length,             cls: 'amber' },
+  ];
+  document.getElementById('stats').innerHTML = stats.map(s =>
+    `<div class="card"><div class="label">${s.label}</div><div class="value ${s.cls}">${s.value}</div></div>`
+  ).join('');
+
+  // Equity curve
+  const canvas = document.getElementById('equity');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth * devicePixelRatio;
+  canvas.height = 200 * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const W = canvas.offsetWidth, H = 200;
+  let eq = 1000;
+  const eqs = [eq];
+  closed.forEach(t => { eq *= (1 + (t.pnl_pct||0)/100); eqs.push(eq); });
+  const minE = Math.min(...eqs) * 0.99;
+  const maxE = Math.max(...eqs) * 1.01;
+  const xStep = W / Math.max(eqs.length - 1, 1);
+  ctx.strokeStyle = '#4ade80';
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  eqs.forEach((v, i) => {
+    const x = i * xStep;
+    const y = H - (v - minE) / (maxE - minE) * (H - 20) - 10;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  // baseline
+  const base_y = H - (1000 - minE) / (maxE - minE) * (H-20) - 10;
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth = 0.5;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(0, base_y); ctx.lineTo(W, base_y); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Trade table
+  const tbody = document.getElementById('trades');
+  const rows  = [...trades].reverse().slice(0, 50).map(t => {
+    const cls   = t.status==='open' ? 'open' : t.result==='win' ? 'win' : 'loss';
+    const pnl   = t.pnl_pct != null ? (t.pnl_pct > 0 ? '+' : '') + t.pnl_pct.toFixed(2) + '%' : '—';
+    const time  = t.entry_time ? t.entry_time.slice(0,16).replace('T',' ') : '—';
+    return `<tr>
+      <td>${t.id}</td>
+      <td>${t.side||'—'}</td>
+      <td>${t.entry_price?.toFixed(2)||'—'}</td>
+      <td>${t.exit_price?.toFixed(2)||'—'}</td>
+      <td>${t.sl?.toFixed(2)||'—'}</td>
+      <td>${t.tp?.toFixed(2)||'—'}</td>
+      <td>${t.rsi_at_entry||'—'}</td>
+      <td class="${cls}">${pnl}</td>
+      <td class="${cls}">${t.status==='open'?'OPEN':t.result?.toUpperCase()||'—'}</td>
+      <td>${time}</td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML = rows || '<tr><td colspan="10" style="color:#475569;padding:20px">No trades yet — start paper trading in TradingView</td></tr>';
+}
+
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>
